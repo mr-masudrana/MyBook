@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile - MyBook</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Font-Awesome Icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- AOS CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <style>
+  #backToTop {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: none;
+  z-index: 999;
+  padding: 10px 14px;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light px-3">
+    <a class="navbar-brand d-flex align-items-center" href="index.html">MyBook</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-between" id="navbarContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-home me-1"></i>Home</a></li>
+        <li class="nav-item"><a class="nav-link active" href="profile.html"><i class="fas fa-user-circle me-1"></i>Profile</a></li>
+        <li class="nav-item"><a class="nav-link" href="about.html"><i class="fas fa-info-circle me-1"></i>About us</a></li>
+        <li class="nav-item"><a class="nav-link" href="contact.html"><i class="fas fa-envelope me-1"></i>Connect us</a></li>
+        <li class="nav-item"><a class="nav-link" href="setting.html"><i class="fas fa-cog me-1"></i>Setting</a></li>
+        <li class="nav-item"><a class="nav-link" href="javascript:logout()"><i class="fas fa-sign-out-alt me-1"></i>Logout</a></li>
+      </ul>
+      <!-- Search Bar -->
+      <div class="position-relative w-100 me-2">
+        <input class="form-control" type="search" placeholder="Search user..." id="searchUserInput">
+        <button id="clearSearchBtn" class="btn btn-sm btn-danger position-absolute end-0 top-0 mt-1 me-1 d-none">×</button>
+        <div id="userSearchResults" class="dropdown-menu show w-100 shadow d-none mt-1"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Body Section -->
+  <div class="container my-4">
+    <div class="row">
+      <div class="col-md-6 pb-3">
+        <div id="profileCard" class="card p-4">
+          <div class="text-center">
+            <img id="profilePreview" class="img-thumbnail mt-2 mb-4" style="max-width: 150px;">
+            <h4 id="fullName" class="text-primary"></h4>
+            <p id="userEmail" class="text-muted"></p>
+            <!-- Only shown for current user's profile -->
+            <div id="editControls">
+              <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#uploadProfileModal">Change Profile Picture</button>
+            </div>
+        </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card p-4">
+          <div class="col-md-6 mb-3">
+            <strong>Phone:</strong>
+            <p id="phone"></p>
+          </div>
+          <div class="col-md-6 mb-3">
+            <strong>Date of Birth:</strong>
+            <p id="birth"></p>
+          </div>
+          <div class="col-md-6 mb-3">
+            <strong>Gender:</strong>
+            <p id="gender"></p>
+          </div>
+          <!-- Only shown for current user's profile -->
+          <div id="editProfile">
+            <button class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Upload Profile Picture Modal -->
+    <div class="modal fade" id="uploadProfileModal" tabindex="-1" aria-labelledby="uploadProfileModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="uploadProfileModalLabel">Upload Profile Picture</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <input type="file" id="profileImage" accept="image/*" class="form-control mb-3">
+            <button class="btn btn-primary" onclick="uploadProfileImage()">Upload</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <div class="form-floating mb-3">
+              <input type="text" id="profileImage" class="form-control" placeholder="First Name">
+              <label for="firstName">First Name</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="text" id="profileImage" class="form-control" placeholder="Last Name">
+              <label for="lastName">Last Name</label>
+            </div>
+            <button class="btn btn-info" onclick="editProfile()">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <!-- Load My Post -->
+    <div class="row">
+      <h5>User Posts</h5>
+      <div id="myPosts" class="mt-3"></div>
+      <!-- Loading Spinner -->
+      <div id="loadingSpinner" class="text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Back to Top Button -->
+  <button id="backToTop" class="btn btn-primary rounded-circle">^</button>
+  <!-- Footer Section -->
+  <footer class="py-3 border-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+          <p class="mb-0 small text-muted">&copy; 2025 MyBook | All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- AOS JS -->
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>AOS.init();</script>
+  <script type="module" src="assets/profile.js"></script>
+</body>
+</html>

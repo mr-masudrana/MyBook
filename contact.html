@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact Us | MyBook</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .contact-section {
+      background-color: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light px-3">
+  <a class="navbar-brand" href="#"><i class="fas fa-book me-2"></i>MyBook</a>
+</nav>
+
+<!-- Contact Form -->
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 contact-section">
+      <h3 class="mb-4"><i class="fas fa-envelope me-2"></i>Contact Us</h3>
+      <form id="contactForm">
+        <div class="mb-3">
+          <label class="form-label">Your Name</label>
+          <input type="text" id="name" class="form-control" placeholder="Enter your name" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Your Email</label>
+          <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Subject</label>
+          <input type="text" id="subject" class="form-control" placeholder="Enter subject" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Message</label>
+          <textarea id="message" class="form-control" rows="5" placeholder="Write your message..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane me-1"></i>Send Message</button>
+      </form>
+      <div id="statusMessage" class="mt-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDCy0UB_zv7Z-PHuuXC6GEcrCV-u0QkSW0",
+    authDomain: "registrationapi-1f476.firebaseapp.com",
+    databaseURL: "https://registrationapi-1f476-default-rtdb.firebaseio.com",
+    projectId: "registrationapi-1f476",
+    storageBucket: "registrationapi-1f476.appspot.com",
+    messagingSenderId: "409980116764",
+    appId: "1:409980116764:web:6151575d4f286853e9e4d9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const contactForm = document.getElementById('contactForm');
+  const statusMsg = document.getElementById('statusMessage');
+
+  contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const subject = document.getElementById("subject").value.trim();
+    const message = document.getElementById("message").value.trim();
+
+    if (!name || !email || !subject || !message) return;
+
+    try {
+      await push(ref(db, "contactMessages"), {
+        name,
+        email,
+        subject,
+        message,
+        timestamp: Date.now()
+      });
+
+      statusMsg.innerHTML = `<div class="alert alert-success">Message sent successfully!</div>`;
+      contactForm.reset();
+    } catch (error) {
+      statusMsg.innerHTML = `<div class="alert alert-danger">Failed to send message. Try again.</div>`;
+    }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
